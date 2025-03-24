@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>Sign In</h2>
+            <form id="roles-login-form">
+                <input type="email" id="login-email" placeholder="Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+
+                <select id="role-selection" required>
+                    <option value="" disabled selected>Select Your Role</option>
+                    <option value="ads-manager">Ads Manager</option>
+                    <option value="editor">Editor</option>
+                    <option value="writer">Writer</option>
+                </select>
+
+                <button type="submit">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="roles-script.js"></script>
+</body>
+</html>
