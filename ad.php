@@ -1,8 +1,11 @@
 <?php
+
+var_dump($_POST); // Debugging to show the form data
+
 $servername = "localhost";
 $username = "root";
-$password = ""; // replace with your DB password
-$dbname = "nepnews"; // your database name
+$password = ""; // Your database password
+$dbname = "nepnews"; // Your database name
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -11,7 +14,6 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-echo "Connected successfully to the database.<br>";
 
 // Create table if it doesn't exist
 $sql_create_table = "
@@ -24,73 +26,71 @@ $sql_create_table = "
     );
 ";
 if ($conn->query($sql_create_table) === TRUE) {
-    echo "Table created successfully or already exists.<br>";
+    // Table created or already exists
 } else {
     echo "Error creating table: " . $conn->error . "<br>";
 }
 
-// Function to create a user
-function createUser($email, $username, $password, $role) {
-    global $conn;
+// Create User function
+if (isset($_POST['create_user'])) {
+    if (isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['role'])) {
+        $email = $_POST['email'];
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        $role = $_POST['role'];
 
-    // Hash the password before storing it
-    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        // Hash the password before storing
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-    $stmt = $conn->prepare("INSERT INTO staffLoginCredential (email, username, password, role) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $email, $username, $hashedPassword, $role);
+        // Prepare and execute the SQL query to insert the data into the database
+        $stmt = $conn->prepare("INSERT INTO staffLoginCredential (email, username, password, role) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $email, $username, $hashedPassword, $role);
 
-    if ($stmt->execute()) {
-        echo "User '$username' created successfully!<br>";
-    } else {
-        echo "Error creating user: " . $stmt->error . "<br>";
+        if ($stmt->execute()) {
+            echo "User '$username' created successfully!<br>";
+        } else {
+            echo "Error creating user: " . $stmt->error . "<br>";
+        }
+
+        $stmt->close();
     }
-
-    $stmt->close();
 }
 
-// Function to delete a user
-function deleteUser($email, $role) {
-    global $conn;
+// Delete User function
+if (isset($_POST['delete_user'])) {
+    if (isset($_POST['delete-email'], $_POST['delete-role'])) {
+        $email = $_POST['delete-email'];
+        $role = $_POST['delete-role'];
 
-    $stmt = $conn->prepare("DELETE FROM staffLoginCredential WHERE email = ? AND role = ?");
-    $stmt->bind_param("ss", $email, $role);
+        // Prepare and execute the SQL query to delete the data from the database
+        $stmt = $conn->prepare("DELETE FROM staffLoginCredential WHERE email = ? AND role = ?");
+        $stmt->bind_param("ss", $email, $role);
 
-    if ($stmt->execute()) {
-        if ($stmt->affected_rows > 0) {
-            echo "User with email '$email' and role '$role' deleted successfully!<br>";
+        if ($stmt->execute()) {
+            if ($stmt->affected_rows > 0) {
+                echo "User with email '$email' and role '$role' deleted successfully!<br>";
+            } else {
+                echo "No matching user found to delete.<br>";
+            }
         } else {
-            echo "No matching user found to delete.<br>";
+            echo "Error deleting user: " . $stmt->error . "<br>";
         }
-    } else {
-        echo "Error deleting user: " . $stmt->error . "<br>";
-    }
 
-    $stmt->close();
+        $stmt->close();
+    }
 }
 
-// Handle form submissions for create or delete
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['action'])) {
-        if ($_POST['action'] == 'create' && isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['role'])) {
-            // Create user example
-            $email = $_POST['email'];
-            $username = $_POST['username'];
-            $password = $_POST['password'];
-            $role = $_POST['role'];
-            echo "Attempting to create user...<br>";
-            createUser($email, $username, $password, $role);
-        } elseif ($_POST['action'] == 'delete' && isset($_POST['delete-email'], $_POST['delete-role'])) {
-            // Delete user example
-            $email = $_POST['delete-email'];
-            $role = $_POST['delete-role'];
-            echo "Attempting to delete user...<br>";
-            deleteUser($email, $role);
-        } else {
-            echo "Invalid form submission.<br>";
-        }
-    } else {
-        echo "Action not specified.<br>";
-    }
+// Fetch users from the database to display in the table
+$sql = "SELECT email, username, role FROM staffLoginCredential";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    // Fetch all users into an array
+    $users = $result->fetch_all(MYSQLI_ASSOC);
+    // Return the users as JSON
+    echo json_encode($users);
+} else {
+    echo json_encode([]); // Return an empty array if no users
 }
 
 $conn->close();

@@ -23,7 +23,7 @@
     <!-- Create User Section -->
     <div id="section-create" class="form-container">
       <h2>Create User</h2>
-      <form id="create-user-form" action="ad.php" method="post">
+      <form id="create-user-form" action="ad.php" method="POST">
         <div class="form-field">
           <label for="email">Email</label>
           <input type="email" id="email" name="email" required>
@@ -54,7 +54,7 @@
     <!-- Delete User Section -->
     <div id="section-delete" class="form-container" style="display: none;">
       <h2>Delete User</h2>
-      <form id="delete-user-form" action="ad.php" method="post">
+      <form id="delete-user-form" action="ad.php" method="POST">
         <div class="form-field">
           <label for="delete-email">Email</label>
           <input type="email" id="delete-email" name="delete-email" required>
@@ -82,7 +82,7 @@
             <th>Role</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="user-list">
           <!-- Dynamic Table Content will be loaded here -->
         </tbody>
       </table>

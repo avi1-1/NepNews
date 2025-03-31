@@ -1,6 +1,6 @@
 <?php
 // Database connection
-include 'db_connection.php'; // Include your database connection file
+include 'db.php'; // Include your database connection file
 
 // Function to validate password strength
 function validatePassword($password) {
