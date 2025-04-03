@@ -1,48 +1,63 @@
-// Example of existing users with their roles (normally these would be fetched from a database)
-let users = [
-    { name: "John Doe", email: "adsmanager@example.com", role: "Ads Manager" },
-    { name: "Jane Smith", email: "editor@example.com", role: "Editor" },
-    { name: "Mark Taylor", email: "writer@example.com", role: "Writer" }
-];
-
-// Function to display users
-function displayUsers() {
-    const userList = document.getElementById("user-list");
-    userList.innerHTML = ""; // Clear the existing list
-    users.forEach(user => {
-        const li = document.createElement("li");
-        li.textContent = `${user.name} - ${user.email} - Role: ${user.role}`;
-        userList.appendChild(li);
-    });
-}
-
-// Add event listener for creating new user
-document.getElementById("create-user-form").addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const name = document.getElementById("user-name").value;
-    const email = document.getElementById("user-email").value;
-    const password = document.getElementById("user-password").value;
-    const role = document.getElementById("role-selection").value;
-
-    if (!role) {
-        alert("Please select a role.");
-        return;
-    }
-
-    // Simulate adding user (in real applications, save to database)
-    users.push({ name: name, email: email, role: role });
-    alert("User created successfully!");
-
-    // Clear the form
-    document.getElementById("user-name").value = "";
-    document.getElementById("user-email").value = "";
-    document.getElementById("user-password").value = "";
-    document.getElementById("role-selection").value = "";
-
-    // Re-display the updated list of users
+document.addEventListener("DOMContentLoaded", () => {
     displayUsers();
 });
 
-// Display existing users on page load
-displayUsers();
+document.getElementById("create-user-form").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("user-email").value.trim();
+    const password = document.getElementById("user-password").value.trim();
+    const role = document.getElementById("user-role").value;
+
+    if (!username || !email || !password || !role) {
+        showMessage("All fields are required!", "error");
+        return;
+    }
+
+    try {
+        const response = await fetch("server.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, email, password, role }),
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            showMessage(result.success, "success");
+            document.getElementById("create-user-form").reset();
+            displayUsers();
+        } else {
+            showMessage(result.error, "error");
+        }
+    } catch (error) {
+        showMessage("Failed to connect to server.", "error");
+    }
+});
+
+// Function to fetch and display users
+async function displayUsers() {
+    try {
+        const response = await fetch("server.php");
+        const users = await response.json();
+
+        const userList = document.getElementById("user-list");
+        userList.innerHTML = ""; // Clear list
+
+        users.forEach(user => {
+            const li = document.createElement("li");
+            li.textContent = `${user.username} - ${user.email} - Role: ${user.role}`;
+            userList.appendChild(li);
+        });
+    } catch (error) {
+        console.error("Error fetching users:", error);
+    }
+}
+
+// Function to display messages
+function showMessage(message, type) {
+    const messageDiv = document.getElementById("message");
+    messageDiv.textContent = message;
+    messageDiv.className = type;
+    setTimeout(() => (messageDiv.textContent = ""), 3000);
+}

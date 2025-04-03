@@ -10,14 +10,12 @@
     <div class="container">
         <div class="form-container">
             <h2>Admin Sign In</h2>
-            <form id="admin-login-form">
-                <input type="email" id="admin-email" placeholder="Admin Email" required>
-                <input type="password" id="admin-password" placeholder="Admin Password" required>
+            <form id="admin-login-form" action="admin_login.php" method="POST">
+                <input type="email" name="admin-email" placeholder="Admin Email" required>
+                <input type="password" name="admin-password" placeholder="Admin Password" required>
                 <button type="submit">Sign In</button>
             </form>
         </div>
     </div>
-
-    <script src="admin-script.js"></script>
 </body>
 </html>

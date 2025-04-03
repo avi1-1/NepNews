@@ -1,38 +1,49 @@
-document.getElementById("roles-login-form").addEventListener("submit", function(event) {
-    event.preventDefault();
-    
-    const email = document.getElementById("login-email").value;
-    const password = document.getElementById("login-password").value;
-    const role = document.getElementById("role-selection").value;
+document.getElementById("roles-login-form").addEventListener("submit", async function (event) {
+    event.preventDefault(); // Prevent default form submission
 
-    if (!role) {
-        alert("Please select a role before signing in.");
+    // Get input values
+    let email = document.getElementById("login-email").value.trim();
+    let password = document.getElementById("login-password").value.trim();
+    let role = document.getElementById("role-selection").value;
+
+    if (!email || !password || !role) {
+        alert("Please fill in all fields.");
         return;
     }
 
-    // Validate user credentials based on role (for this example, we're just checking hardcoded values)
-    let userCredentials = {
-        "ads-manager": { email: "adsmanager@example.com", password: "ads123" },
-        "editor": { email: "editor@example.com", password: "editor123" },
-        "writer": { email: "writer@example.com", password: "writer123" }
-    };
+    // Send AJAX request to PHP
+    let formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("role", role);
 
-    if (email === userCredentials[role].email && password === userCredentials[role].password) {
-        // Redirect based on role
-        switch (role) {
-            case "ads-manager":
-                window.location.href = "ads-manager-dashboard.html";
-                break;
-            case "editor":
-                window.location.href = "editor-dashboard.html";
-                break;
-            case "writer":
-                window.location.href = "writer-dashboard.html";
-                break;
-            default:
-                alert("Invalid role.");
+    try {
+        let response = await fetch("role-login.php", {
+            method: "POST",
+            body: formData
+        });
+
+        let result = await response.json();
+
+        if (result.success) {
+            switch (role.toLowerCase()) {
+                case "ads-manager":
+                    window.location.href = "ads-manager-dashboard.html";
+                    break;
+                case "editor":
+                    window.location.href = "editor-dashboard.html";
+                    break;
+                case "writer":
+                    window.location.href = "writer-dashboard.html";
+                    break;
+                default:
+                    alert("Invalid role.");
+            }
+        } else {
+            alert(result.message);
         }
-    } else {
-        alert("Invalid credentials. Please try again.");
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Something went wrong. Please try again.");
     }
 });
