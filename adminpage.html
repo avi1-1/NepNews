@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NepNews | Admin Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="adminpage.css">
+</head>
+<body>
+
+  <div class="hamburger" id="hamburger">&#9776;</div>
+
+  <div class="sidebar" id="sidebar">
+    <h2>NepNews Admin</h2>
+    <ul>
+      <li><a href="#" id="menu-create">Create User</a></li>
+      <li><a href="#" id="menu-delete">Delete User</a></li>
+    </ul>
+  </div>
+
+  <div class="content" id="main-content">
+    <h1>Welcome, Admin</h1>
+
+    <!-- Create New User Section -->
+    <div class="form-container" id="section-create">
+      <h2>Create New User</h2>
+      <form id="create-user-form">
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Email Address" required>
+          <div id="email-error" class="error"></div>
+        </div>
+
+        <div class="form-field">
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="Username " required>
+          <div id="username-error" class="error"></div>
+        </div>
+
+        <div class="form-field password-field">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Password " required>
+          <i class="eye-icon" id="eye-icon" onclick="togglePassword()">
+            <i class="fas fa-eye"></i>
+          </i>
+          <div id="password-error" class="error"></div>
+        </div>
+
+        <div class="form-field">
+          <label for="role">Role</label>
+          <select id="role" required>
+            <option value="" disabled selected>Select Role</option>
+            <option value="editor">Editor</option>
+            <option value="writer">Writer</option>
+            <option value="ads-manager">Ads Manager</option>
+          </select>
+        </div>
+
+        <button type="submit">Create User</button>
+      </form>
+    </div>
+
+    <!-- Delete User Section -->
+    <div class="form-container" id="section-delete" style="display:none;">
+      <h2>Delete User</h2>
+      <form id="delete-user-form">
+        <div class="form-field">
+          <label for="delete-email">Email</label>
+          <input type="email" id="delete-email" placeholder="Email Address to delete" required>
+        </div>
+
+        <div class="form-field">
+          <label for="delete-role">Role</label>
+          <select id="delete-role" required>
+            <option value="" disabled selected>Select Role</option>
+            <option value="editor">Editor</option>
+            <option value="writer">Writer</option>
+            <option value="ads-manager">Ads Manager</option>
+          </select>
+        </div>
+
+        <button type="submit">Delete User</button>
+      </form>
+    </div>
+
+    <!-- User Table -->
+    <div class="table-container">
+      <h2>User Table</h2>
+      <table id="user-table">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Users will be dynamically added here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="adminpage.js"></script>
+  
+</body>
+</html>
