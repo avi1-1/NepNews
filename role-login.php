@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $role = $_POST['role'];
 
     // Prepare and execute query
-    $stmt = $conn->prepare("SELECT id, username, password, role FROM admin WHERE email = ?");
+    $stmt = $conn->prepare("SELECT id, username, password, role FROM stafflogincredential WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
@@ -78,7 +78,7 @@ $conn->close();
 <body>
     <div class="container">
         <div class="form-container">
-            <h2>Sign In</h2>
+            <h2>Staff Sign In</h2>
             <form id="roles-login-form" method="POST" action="">
                 <input type="email" name="email" id="login-email" placeholder="Email" required>
                 <input type="password" name="password" id="login-password" placeholder="Password" required>
