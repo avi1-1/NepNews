@@ -1,17 +1,24 @@
 <?php
 session_start();
-if ($_SESSION['email'] == true) {
-    // code...
-} else {
-    header('location:login.php');
-}
+// if ($_SESSION['email'] == true) {
+// } else {
+//     header('Location: ../role-login.php');
+//     exit();
+// }
 
 $page = 'editor';
 include('editorheader.php');
+include('db.php');
+
+// Get filter
+$filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
+$pageNum = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page1 = ($pageNum > 1) ? ($pageNum * 3) - 3 : 0;
 ?>
 
 <style>
-/* General Styling */
+/* --- YOUR EXISTING CSS (unchanged) --- */
+/* Paste your full CSS code here exactly as you did above */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f8f9fa;
@@ -19,7 +26,6 @@ body {
     padding: 0;
     color: #495057;
 }
-
 .container {
     width: 85%;
     background: white;
@@ -28,16 +34,13 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin: 30px auto;
 }
-
 h1 {
     text-align: center;
     color: #333;
 }
-
 h4 {
     color: #007bff;
 }
-
 /* News Card Layout */
 .card {
     background-color: #fff;
@@ -46,21 +49,17 @@ h4 {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     margin-bottom: 20px;
 }
-
 .card-header {
     font-weight: bold;
     font-size: 1.2em;
     color: #333;
 }
-
 .card-body {
     padding-top: 10px;
 }
-
 .card-footer {
     text-align: right;
 }
-
 /* Buttons */
 .btn {
     padding: 8px 16px;
@@ -68,69 +67,56 @@ h4 {
     font-size: 14px;
     transition: all 0.3s ease;
 }
-
 .btn-success {
     background-color: #28a745;
     color: white;
     border: none;
 }
-
 .btn-success:hover {
     background-color: #218838;
 }
-
 .btn-warning {
     background-color: #ffc107;
     color: white;
     border: none;
 }
-
 .btn-warning:hover {
     background-color: #e0a800;
 }
-
 .btn-info {
     background-color: #17a2b8;
     color: white;
     border: none;
 }
-
 .btn-info:hover {
     background-color: #138496;
 }
-
 .btn-danger {
     background-color: #dc3545;
     color: white;
     border: none;
 }
-
 .btn-danger:hover {
     background-color: #c82333;
 }
-
 /* Table Styling */
 .table {
     width: 100%;
     border-collapse: collapse;
 }
-
 th, td {
     border: 1px solid #ddd;
     padding: 12px;
     text-align: left;
     font-size: 14px;
 }
-
 th {
     background-color: #f8f9fa;
     color: #495057;
 }
-
 tr:hover {
     background-color: #f1f1f1;
 }
-
 /* Pagination */
 .pagination {
     display: flex;
@@ -138,11 +124,9 @@ tr:hover {
     list-style: none;
     padding: 10px 0;
 }
-
 .pagination li {
     margin: 5px;
 }
-
 .pagination .page-link {
     padding: 10px 15px;
     border: 1px solid #ddd;
@@ -151,63 +135,113 @@ tr:hover {
     color: #007bff;
     transition: 0.3s;
 }
-
 .pagination .page-link:hover {
     background-color: #007bff;
     color: white;
 }
-
 .pagination .page-item.disabled .page-link {
     color: gray;
     pointer-events: none;
 }
-
 .pagination .page-item.active .page-link {
     background-color: #007bff;
     color: white;
 }
-
 .pagination .page-item.active .page-link:hover {
     background-color: #0056b3;
 }
-
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
         width: 95%;
     }
-
     .pagination {
         flex-wrap: wrap;
     }
 }
+.filter-btn {
+    color: white;
+    background-color: #6c757d; /* default gray background */
+    border: none;
+}
+.filter-btn:hover {
+    opacity: 0.9;
+}
+
+.active-filter {
+    background-color: #ffc107 !important; /* yellow background */
+    color: black !important;
+}
+/* Filter Buttons Styling */
+.filter-btn {
+    color: white;
+    background-color: #6c757d;
+    border: none;
+    margin: 0 10px;
+    text-decoration: none;
+}
+.filter-btn:hover {
+    opacity: 0.9;
+}
+
+.active-filter {
+    background-color: #ffc107 !important;
+    color: black !important;
+}
+
+/* Centering filter buttons */
+.filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
 </style>
 
 <div class="container">
     <h1>Editor Portal</h1>
     <hr>
 
-    <!-- Display count of published posts -->
-    <h4>Total Published News: 
+    <h4>Total Published News:
         <?php
-        include('db.php');
-        // Query to count the number of published posts
         $count_published = mysqli_query($conn, "SELECT COUNT(*) FROM news WHERE status='published'");
         $row = mysqli_fetch_row($count_published);
-        echo $row[0]; // Display the count of published news
+        echo $row[0];
         ?>
     </h4>
 
-    <!-- Loop through the fetched news items and display them in cards -->
-    <?php
-  $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Use ternary operator to check if page is set
-  if ($page == "" || $page == 1) {
-      $page1 = 0;
-  } else {
-      $page1 = ($page * 3) - 3;
-  }
+    <!-- Filter Buttons -->
+     
+    <!-- Filter Buttons -->
+<div class="filter-container">
+    <a href="editor.php?filter=all" class="btn filter-btn <?php echo $filter == 'all' ? 'active-filter' : ''; ?>">All News</a>
+    <a href="editor.php?filter=draft" class="btn filter-btn <?php echo $filter == 'draft' ? 'active-filter' : ''; ?>">Draft News</a>
+    <a href="editor.php?filter=published" class="btn filter-btn <?php echo $filter == 'published' ? 'active-filter' : ''; ?>">Published News</a>
+</div>
 
-    $query = mysqli_query($conn, "SELECT * FROM news LIMIT $page1,3");
+
+
+    <?php
+    // Build filtered query
+    if ($filter == 'draft') {
+        $sql = "SELECT * FROM news WHERE status='draft'";
+    } elseif ($filter == 'published') {
+        $sql = "SELECT * FROM news WHERE status='published'";
+    } else {
+        $sql = "SELECT * FROM news";
+    }
+
+    // Fetch data for current page
+    $query = mysqli_query($conn, $sql . " ORDER BY id DESC LIMIT $page1, 3");
+    $count_all = mysqli_query($conn, $sql);
+    $total = mysqli_num_rows($count_all);
+
+    if (mysqli_num_rows($query) == 0) {
+        echo "<p>No news found.</p>";
+    }
+
     while ($row = mysqli_fetch_array($query)) {
     ?>
         <div class="card">
@@ -233,24 +267,14 @@ tr:hover {
 
     <!-- Pagination -->
     <ul class="pagination">
-        <li class="page-item disabled">
-            <a href="#" class="page-link">Previous</a>
-        </li>
         <?php
-        $sql = mysqli_query($conn, "SELECT * FROM news");
-        $count = mysqli_num_rows($sql);
-        $a = ceil($count / 3);
-        for ($b = 1; $b <= $a; $b++) {
+        $total_pages = ceil($total / 3);
+        for ($i = 1; $i <= $total_pages; $i++) {
+            $active = ($i == $pageNum) ? 'active' : '';
+            echo "<li class='page-item $active'><a class='page-link' href='editor.php?filter=$filter&page=$i'>$i</a></li>";
+        }
         ?>
-            <li class="page-item <?php echo ($b == $page) ? 'active' : ''; ?>"><a class="page-link" href="editor.php?page=<?php echo $b; ?>"><?php echo $b; ?></a></li>
-        <?php } ?>
-        <li class="page-item disabled">
-            <a href="#" class="page-link">Next</a>
-        </li>
     </ul>
-
 </div>
 
-<?php
-include('footer.php');
-?>
+<?php include('footer.php'); ?>
