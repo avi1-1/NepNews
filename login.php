@@ -1,54 +1,69 @@
 <?php
-session_start();
-include 'db.php';
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-
-    // Fetch user from the database
-    $sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
-    $result = $conn->query($sql);
-    if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['role'] = $user['role'];
-
-        // Redirect to the appropriate dashboard
-        if ($user['role'] == 'writer') {
-            header('Location: writer_dashboard.php');
-        } else {
-            header('Location: editor_dashboard.php');
-        }
-    } else {
-        $error = "Invalid username or password.";
-    }
-}
+ session_start();
 
 ?>
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="style.css">
+	<title>Admin login</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<!-- Popper JS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+	<!-- costom css -->
+	  <link rel="stylesheet" href="style/admin.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Login</h1>
-        <form action="login.php" method="POST">
-            <input type="text" name="username" placeholder="Username" required><br>
-            <input type="password" name="password" placeholder="Password" required><br>
-            <button type="submit">Login</button>
-        </form>
-        <?php if (isset($error)) { echo "<p style='color:red;'>$error</p>"; } ?>
-    </div>
+   <div class="container">
+
+  <form action="login.php" method="post">
+  	<h3>Admin Login</h3>
+  <div class="form-group">
+    <label for="email">Email:</label>
+    <input type="Username"  name="email" class="form-control" id="email">
+  </div>
+  <div class="form-group">
+    <label for="pwd">Password:</label>
+    <input type="password" class="form-control" name="password" id="pwd">
+  </div>
+  
+  <input type="submit" name="submit" class="btn btn-primary" value="login">
+</form>
+   	
+   </div>
+
 </body>
 </html>
 
 <?php
-$conn->close();
+ include('db.php');
+
+  if (isset($_POST['submit'])) {
+    $email=$_POST['email'];
+   $password=$_POST['password'];
+
+    $query=mysqli_query($conn,"select * from admin_login where email='$email' AND password='$password' ");
+
+   if ($query) {
+   	  if (mysqli_num_rows($query)>0) {
+          $_SESSION['email']=$email;
+        
+   	  	  header('location:category.php');
+      }else{
+      	echo "<script>  alert('Invalid Credentails,Please Try Again')</script>";
+      }
+   }
+
+  	
+  }
+
+
 ?>
