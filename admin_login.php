@@ -101,7 +101,7 @@ $conn->close();
                 data: $(this).serialize() + '&ajax=true', // Include 'ajax=true' flag to detect AJAX requests
                 success: function(response) {
                     if (response === "success") {
-                        window.location.href = "admin_dashboard.php"; // Redirect to dashboard on success
+                        window.location.href = "../nepnews/AdminDashboard/ad.html"; // Redirect to dashboard on success
                     } else {
                         alert(response); // Show the error message in an alert
                         // Reload the page after alert is dismissed

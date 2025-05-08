@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $role = $_POST['role'];
 
     // Prepare and execute query
-    $stmt = $conn->prepare("SELECT id, username, password, role FROM admin WHERE email = ?");
+    $stmt = $conn->prepare("SELECT id, username, password, role FROM stafflogincredential WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
@@ -33,20 +33,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if (password_verify($password, $hashed_password)) {
             if (strtolower($db_role) === strtolower($role)) {
+                // ✅ Set required session variables
                 $_SESSION['user_id'] = $id;
                 $_SESSION['username'] = $username;
                 $_SESSION['role'] = $db_role;
+                $_SESSION['email'] = $email; // ✅ This fixes the redirect issue
 
                 // Redirect based on role
                 switch (strtolower($role)) {
                     case "ads manager":
-                        header("Location: ads-manager-dashboard.html");
+                        header("Location: ../nepnews/AdsManager/ads.html");
                         exit();
                     case "editor":
-                        header("Location: editor-dashboard.html");
+                        header("Location: editor.php");
                         exit();
                     case "writer":
-                        header("Location: writer-dashboard.html");
+                        header("Location: category.php");
                         exit();
                     default:
                         echo "<script>alert('Invalid role selected.');</script>";
@@ -73,12 +75,54 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Role Login</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Link your CSS file if any -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            margin: 10% auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="form-container">
-            <h2>Sign In</h2>
+            <h2>Staff Sign In</h2>
             <form id="roles-login-form" method="POST" action="">
                 <input type="email" name="email" id="login-email" placeholder="Email" required>
                 <input type="password" name="password" id="login-password" placeholder="Password" required>
