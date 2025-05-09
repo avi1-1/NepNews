@@ -41,3 +41,5 @@ echo json_encode($newsData);
 // Close connection
 $conn->close();
 ?>
+
+
