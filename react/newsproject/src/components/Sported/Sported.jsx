@@ -56,4 +56,4 @@ const Sports = () => {
   );
 };
 
-export default Sports; // ✅ Corrected component name
+export default Sports; 
