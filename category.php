@@ -9,6 +9,7 @@ $page = 'category';
 include('header.php');
 ?>
 
+
 <style>
     body {
     background: #f8f9fa; /* or any plain color */

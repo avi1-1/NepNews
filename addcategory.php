@@ -6,6 +6,7 @@ if ( $_SESSION['email']==true) {
 header('location:role-login.php');
 $page='category';
 include('header.php');
+
 ?>
 
 <style>
