@@ -3,7 +3,7 @@ session_start();
 if ($_SESSION['email'] == true) {
     // code...
 } else {
-    header('location:login.php');
+    header('location:role-login.php');
 }
 $page = 'product';
 include('header.php');
@@ -20,7 +20,7 @@ body {
 
 .container {
     width: 50%;
-	height: fit-content;
+    height: fit-content;
     background: white;
     padding: 30px;
     border-radius: 10px;
@@ -90,7 +90,7 @@ textarea {
 }
 
 .breadcrumb-item a {
-    text-decoration: none;  /* Removes the underline from the links */
+    text-decoration: none;
     color: #000;
 }
 
@@ -107,7 +107,7 @@ textarea {
 /* Optional: Style the active item */
 .breadcrumb-item.active {
     font-weight: bold;
-    color: #333; /* Optional: Change color for active item */
+    color: #333;
 }
 </style>
 
@@ -130,87 +130,94 @@ textarea {
             <label for="comment">Description:</label>
             <textarea class="form-control" placeholder="Description......." rows="4" name="description" id="description"></textarea>
         </div>
-		<div class="form-group">
+        <div class="form-group">
             <label for="category">Date:</label>
             <input type="date"  name="date" class="form-control" id="date">
         </div>
-		<div class="form-group">
+        <div class="form-group">
             <label for="category">Thumbnail:</label>
             <input type="file"  name="thumbnail" class="form-control img-thumbnail" id="thumbnail">
         </div>
-		<div class="form-group">
-    <label for="category">Category:</label>
-    <select class="form-control" name="category">
-        <?php
-        include('db.php'); // Ensure this file contains a valid database connection
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <select class="form-control" name="category">
+                <?php
+                include('db.php');
+                $query = mysqli_query($conn, "SELECT * FROM category");
 
-        $query = mysqli_query($conn, "SELECT * FROM category"); // Execute the query
+                while ($row = mysqli_fetch_array($query)) {
+                    $category = $row['category_name'];
+                ?>
+                    <option value="<?php echo $category; ?>"><?php echo $category; ?></option>
+                <?php } ?>
+            </select>
+        </div>
 
-        while ($row = mysqli_fetch_array($query)) {
-            $category = $row['category_name']; // Fetch category name correctly
-        ?>
-            <option value="<?php echo $category; ?>"><?php echo $category; ?></option>
-        <?php } ?>
-    </select>
-</div>
-
-<div class="form-group">
-		        	<label for="admin">Admin</label>
-		        	<input type="text" class="form-control" disabled value="<?php echo $_SESSION['email'];  ?> ">
-		        	
-		        </div>
+        <div class="form-group">
+            <label for="admin">Admin</label>
+            <input type="text" class="form-control" disabled value="<?php echo $_SESSION['email'];  ?> ">
+        </div>
         <input type="submit" name="submit" class="btn btn-primary" value="Add News">
     </form>
     <script>
-         function validateform(){
-         var x = document.forms['categoryform']['title'].value;
-         var y = document.forms['categoryform']['description'].value;
-         var z = document.forms['categoryform']['date'].value;
-         var w = document.forms['categoryform']['category'].value;
-         if (x=="") {
-          	alert('Title Must Be Filled Out !');
-          	return false;
-          }
-          if (y=="") {
-          	alert('Description Must Be Filled Out !');
-          	return false;
-          }
-           if (y.length<10) {
-          	alert('Description Atleast 100 character !');
-          	return false;
-          }
-          
-       }
+        function validateform() {
+            var x = document.forms['categoryform']['title'].value;
+            var y = document.forms['categoryform']['description'].value;
+            var z = document.forms['categoryform']['date'].value;
+            var w = document.forms['categoryform']['category'].value;
+            if (x == "") {
+                alert('Title Must Be Filled Out!');
+                return false;
+            }
+            if (y == "") {
+                alert('Description Must Be Filled Out!');
+                return false;
+            }
+            if (y.length < 10) {
+                alert('Description At least 10 characters!');
+                return false;
+            }
+        }
     </script>
 </div>
 
 <?php
 include('footer.php');
 ?>
-<?php
 
+<?php
 include('db.php');
 if (isset($_POST['submit'])) {
-	$title=$_POST['title'];
-	$description=$_POST['description'];
-		$date=$_POST['date'];
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    $date = $_POST['date'];
+    $thumbnail = $_FILES['thumbnail']['name'];
+    $tmp_thumbnail = $_FILES['thumbnail']['tmp_name'];
+    $category = $_POST['category'];
+    $admin = $_SESSION['email'];
 
-			$thumbnail=$_FILES['thumbnail']['name'];
-			$tmp_thumbnail=$_FILES['thumbnail']['tmp_name'];
-				$category=$_POST['category'];
-				$admin=$_SESSION['email'];
-			move_uploaded_file($tmp_thumbnail,"images/$thumbnail");
+    // Define the directory where the image will be uploaded
+    $upload_dir = "images/";
+    $upload_path = $upload_dir . $thumbnail;
 
-     $query1=mysqli_query($conn,"insert into news(title,description,date,category,thumbnail,admin)values('$title','$description','$date','$category','$thumbnail','$admin')");
-     if ($query1) {
-     	# code...
-     	echo "<script>alert('News uploaded Successfully !!')</script>  ";
-     }else{
-     	echo "<script>alert('Please Try Again!!')</script>  ";
+    // Check if the file already exists in the directory
+    if (file_exists($upload_path)) {
+        // If the file already exists, skip uploading or show an error
+        echo "<script>alert('Image already exists. Please upload a different image.');</script>";
+    } else {
+        // If the file does not exist, move the uploaded file to the desired directory
+        if (move_uploaded_file($tmp_thumbnail, $upload_path)) {
+            // Insert the news data into the database with status set to 'draft'
+            $query1 = mysqli_query($conn, "INSERT INTO news(title, description, date, category, thumbnail, admin, status) VALUES ('$title', '$description', '$date', '$category', '$thumbnail', '$admin', 'draft')");
 
-     }
-
-
+            if ($query1) {
+                echo "<script>alert('News uploaded successfully!');</script>";
+            } else {
+                echo "<script>alert('Please try again!');</script>";
+            }
+        } else {
+            echo "<script>alert('Failed to upload image. Please try again!');</script>";
+        }
+    }
 }
-
 ?>

@@ -3,7 +3,7 @@ session_start();
 if ( $_SESSION['email']==true) {
   # code...
 }else
-header('location:login.php');
+header('location:role-login.php');
 $page='category';
 include('header.php');
 ?>
