@@ -4,7 +4,7 @@ error_reporting(0);
 if ( $_SESSION['email']==true) {
   # code...
 }else
-header('location:admin_login.php');
+header('location:role-login.php');
 $page='category';
  include('header.php');
 
@@ -24,6 +24,75 @@ $page='category';
  
 
   ?>
+  <style>
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 50%;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 5% auto;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+textarea {
+    resize: none;
+}
+
+/* Button Styling */
+.btn-primary {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+    text-align: center;
+}
+
+.btn-primary:hover {
+    background: #218838;
+}
+</style>
+
 
   <div style=" width: 70%; margin-left: 25%; margin-top: 10%">
   	   

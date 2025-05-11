@@ -2,7 +2,7 @@
 session_start();
 error_reporting(0);
 if (!isset($_SESSION['email']) || $_SESSION['email'] == false) {
-    header('Location: category.php');
+    header('Location: news.php');
     exit();
 }
 
@@ -140,7 +140,7 @@ include('header.php');
                 <th>Date</th>
                 <th>Category</th>
                 <th>Thumbnail</th>
-                <th>Admin</th>
+                <th>Writer</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
