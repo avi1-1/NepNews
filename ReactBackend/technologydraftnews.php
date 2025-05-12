@@ -15,7 +15,7 @@ if ($conn->connect_error) {
 
 $sql = "SELECT id, title, description, date, category, thumbnail, admin, status 
         FROM news 
-        WHERE status = 'published' AND LOWER(category) = 'sports' 
+        WHERE status = 'published' AND LOWER(category) = 'Technology' 
         ORDER BY id DESC";
 
 $result = $conn->query($sql);

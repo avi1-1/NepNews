@@ -24,8 +24,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// ✅ Query to fetch only draft news
-$sql = "SELECT id, title, image FROM news WHERE status = 'draft'";
+// ✅ Query to fetch only published news
+$sql = "SELECT id, title, image FROM news WHERE status = 'published'";
 
 $result = $conn->query($sql);
 
