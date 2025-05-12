@@ -207,8 +207,8 @@ if (isset($_POST['submit'])) {
     } else {
         // If the file does not exist, move the uploaded file to the desired directory
         if (move_uploaded_file($tmp_thumbnail, $upload_path)) {
-            // Insert the news data into the database
-            $query1 = mysqli_query($conn, "INSERT INTO news(title, description, date, category, thumbnail, admin) VALUES ('$title', '$description', '$date', '$category', '$thumbnail', '$admin')");
+            // Insert the news data into the database with status set to 'draft'
+            $query1 = mysqli_query($conn, "INSERT INTO news(title, description, date, category, thumbnail, admin, status) VALUES ('$title', '$description', '$date', '$category', '$thumbnail', '$admin', 'draft')");
 
             if ($query1) {
                 echo "<script>alert('News uploaded successfully!');</script>";

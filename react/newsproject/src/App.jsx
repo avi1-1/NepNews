@@ -9,7 +9,9 @@ import { Home } from "./pages/Home";
 import { Sports } from "./pages/Sports";
 import Technology from "./pages/Technology";
 import Politics from "./pages/Politics";
-import { Entertainment } from "./pages/Entertainment";
+import Entertainment from './pages/Entertainment';
+
+// import { Entertainment } from "./pages/Entertainment";
 import { Business } from "./pages/Business";
 import Paragraph from "./components/Paragraph/Paragraph";
 import Health from "./components/Health/Health";  

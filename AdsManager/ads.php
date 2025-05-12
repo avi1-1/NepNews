@@ -1,8 +1,8 @@
 <?php
 // Database configuration
 $host = 'localhost';
-$username = 'root'; // Change if needed
-$password = '';     // Change if needed
+$username = 'root';
+$password = '';
 $dbname = 'nepnews';
 
 // Create connection
@@ -17,7 +17,7 @@ if ($conn->connect_error) {
 $conn->query("CREATE DATABASE IF NOT EXISTS $dbname");
 $conn->select_db($dbname);
 
-// Create table if not exists
+// Create ads table if not exists
 $tableSql = "CREATE TABLE IF NOT EXISTS ads (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ad_image VARCHAR(255),
@@ -27,10 +27,11 @@ $tableSql = "CREATE TABLE IF NOT EXISTS ads (
 )";
 $conn->query($tableSql);
 
-// Handle form data
+// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_FILES["adImage"]) && $_FILES["adImage"]["error"] === 0) {
-        $uploadDir = 'uploads/';
+        $uploadDir = '../images/'; // ← Go one level up to reach images/ folder
+
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
@@ -43,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $endTime = $_POST['endTime'];
             $redirectLink = $_POST['redirectLink'];
 
+            // Only store the file name (you can store full or relative path if needed)
             $stmt = $conn->prepare("INSERT INTO ads (ad_image, start_time, end_time, redirect_link) VALUES (?, ?, ?, ?)");
             $stmt->bind_param("ssss", $fileName, $startTime, $endTime, $redirectLink);
 

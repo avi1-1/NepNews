@@ -39,7 +39,7 @@ input, select {
 
 /* Hover Effects */
 input:hover, select:hover {
-    border-color: #8e44ad;
+    border-color: white;
     box-shadow: 0 0 8px rgba(142, 68, 173, 0.3);
 }
 
@@ -52,19 +52,19 @@ select {
 /* Forgot Password Link */
 a {
     display: block;
-    margin: 15px 0;  /* Adjusted Spacing */
+    margin: 15px 0;
     text-decoration: none;
     color: #8e44ad;
     font-size: 14px;
     transition: color 0.3s ease-in-out;
 }
 
-/* Increased spacing below "Forgot Password" */
+/* Spacing between link and button */
 a + button {
     margin-top: 10px;
 }
 
-/* Hover Effect */
+/* Hover Effect for Link */
 a:hover {
     color: #732d91;
     text-decoration: underline;
@@ -77,7 +77,7 @@ a:hover {
 button {
     width: 100%;
     padding: 12px;
-    background: #8e44ad;
+    background: #1601f5; /* Staff style blue button */
     color: white;
     border: none;
     border-radius: 6px;

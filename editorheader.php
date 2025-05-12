@@ -12,18 +12,27 @@
   <div class="hamburger" id="hamburger">&#9776;</div>
 
   <div id="sidebar" class="sidebar">
+    
     <h2>Editor Dashboard</h2>
+    
     <ul>
+    
     <li class="nav-item">
                 <a class="nav-link  <?php if($page=='category'){echo 'active';} ?>  " href="editor.php">
                   <span data-feather="users"></span>
-                  Portal
+                  All news
                 </a>
               </li>
               <li class="nav-item active">
-                <a class="nav-link <?php if($page=='news'){echo 'active';} ?> " href="../nepnews/writer and editor/editoredit.php">
+                <a class="nav-link <?php if($page=='news'){echo 'active';} ?> " href="http://localhost/nepnews/editor.php?filter=draft">
                   <span data-feather="shopping-cart"></span>
-                  Edit
+                  Draft News
+                </a>
+      </li>
+      <li class="nav-item active">
+                <a class="nav-link <?php if($page=='news'){echo 'active';} ?> " href="http://localhost/nepnews/editor.php?filter=published">
+                  <span data-feather="shopping-cart"></span>
+                  Published News
                 </a>
       </li>
     
