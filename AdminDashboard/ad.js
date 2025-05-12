@@ -115,6 +115,7 @@ document.getElementById("create-user-form").addEventListener("submit", function 
   .then(response => response.text()) // Get the plain text message
   .then(message => {
     // Handle success and failure messages
+    console.log(message);
     if (message.includes('created')) {
       alert(`${role.charAt(0).toUpperCase() + role.slice(1)} ${username} has been created successfully`);
     } else if (message.includes('Email is already used')) {
